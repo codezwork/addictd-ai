@@ -102,8 +102,8 @@ export const PlatformSwarm = forwardRef<THREE.Points, any>((props, ref) => {
           const curveLengths: number[] = [];
           const curves: THREE.Curve<THREE.Vector2>[] = [];
           
-          shapes.forEach(shape => {
-            shape.curves.forEach(curve => {
+          shapes.forEach((shape: any) => {
+            shape.curves.forEach((curve: any) => {
                const len = curve.getLength();
                totalLength += len;
                curveLengths.push(len);

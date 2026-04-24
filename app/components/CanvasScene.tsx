@@ -51,7 +51,7 @@ export function CanvasScene({ orbRef, introRef, feat1Ref, feat2Ref, swarmRef, on
           <Environment preset="dawn" background={false} />
         </Suspense>
 
-        <EffectComposer disableNormalPass>
+        <EffectComposer>
           <Bloom
             luminanceThreshold={0.8}
             mipmapBlur

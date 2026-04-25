@@ -17,7 +17,7 @@ export function FeatureCards({ feat1Ref, feat2Ref }: FeatureCardsProps) {
       */}
       <group ref={feat1Ref} position={[15, 0, 0]}>
         <Html transform distanceFactor={3.5} position={[0, 0, 0]}>
-          <div className="feature-1 opacity-0 relative max-w-[360px] min-w-[310px] p-[2rem_2.1rem] rounded-[24px] bg-gradient-to-br from-[rgba(35,15,75,0.88)] via-[rgba(60,30,130,0.75)] to-[rgba(80,40,160,0.7)] backdrop-blur-[28px] shadow-[0_0_70px_rgba(167,139,250,0.35),0_0_130px_rgba(139,92,246,0.18),inset_0_0_30px_rgba(200,170,255,0.07),inset_0_1px_0_rgba(255,255,255,0.12)] overflow-hidden text-left border border-white/5 mx-auto">
+          <div className="feature-1 opacity-0 relative w-[90vw] max-w-[360px] sm:min-w-[310px] scale-[0.85] sm:scale-100 origin-center p-[2rem_2.1rem] rounded-[24px] bg-gradient-to-br from-[rgba(35,15,75,0.88)] via-[rgba(60,30,130,0.75)] to-[rgba(80,40,160,0.7)] backdrop-blur-[28px] shadow-[0_0_70px_rgba(167,139,250,0.35),0_0_130px_rgba(139,92,246,0.18),inset_0_0_30px_rgba(200,170,255,0.07),inset_0_1px_0_rgba(255,255,255,0.12)] overflow-hidden text-left border border-white/5 mx-auto">
             {/* Mist Gradients */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(220,195,255,0.16),transparent_55%)] pointer-events-none" />
             
@@ -60,7 +60,7 @@ export function FeatureCards({ feat1Ref, feat2Ref }: FeatureCardsProps) {
       */}
       <group ref={feat2Ref} position={[-15, 0, 0]}>
         <Html transform distanceFactor={3.5} position={[0, 0, 0]}>
-          <div className="feature-2 opacity-0 relative max-w-[360px] min-w-[310px] p-[2rem_2.1rem] rounded-[24px] bg-gradient-to-br from-[rgba(35,15,75,0.88)] via-[rgba(60,30,130,0.75)] to-[rgba(80,40,160,0.7)] backdrop-blur-[28px] shadow-[0_0_70px_rgba(167,139,250,0.35),0_0_130px_rgba(139,92,246,0.18),inset_0_0_30px_rgba(200,170,255,0.07),inset_0_1px_0_rgba(255,255,255,0.12)] overflow-hidden text-left border border-white/5 mx-auto">
+          <div className="feature-2 opacity-0 relative w-[90vw] max-w-[360px] sm:min-w-[310px] scale-[0.85] sm:scale-100 origin-center p-[2rem_2.1rem] rounded-[24px] bg-gradient-to-br from-[rgba(35,15,75,0.88)] via-[rgba(60,30,130,0.75)] to-[rgba(80,40,160,0.7)] backdrop-blur-[28px] shadow-[0_0_70px_rgba(167,139,250,0.35),0_0_130px_rgba(139,92,246,0.18),inset_0_0_30px_rgba(200,170,255,0.07),inset_0_1px_0_rgba(255,255,255,0.12)] overflow-hidden text-left border border-white/5 mx-auto">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(220,195,255,0.16),transparent_55%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(139,92,246,0.1))] pointer-events-none animate-[mistSwirl_8s_linear_infinite]" />
             

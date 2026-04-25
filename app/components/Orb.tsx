@@ -103,6 +103,7 @@ export interface OrbUniforms {
   uCrackProgress: { value: number };
   uOpacity: { value: number };
   uOrbX: { value: number };
+  uOrbY: { value: number };
 }
 
 export const Orb = forwardRef<THREE.Group, any>((props, ref) => {
@@ -126,6 +127,7 @@ roughnessMap.repeat.set(2, 2);
     uCrackProgress: { value: 0 },
     uOpacity: { value: 1.0 },
     uOrbX: { value: 0.0 },
+    uOrbY: { value: 0.0 },
     uColor1: { value: new THREE.Color("#4C1D95") }, // Deep purple
     uColor2: { value: new THREE.Color("#C4B5FD") }, // Light purple/pink
   }), []);
@@ -167,13 +169,14 @@ roughnessMap.repeat.set(2, 2);
       // SHAKE PHYSICS
       const intensity = groupRef.current.userData.uniforms.uIntensity.value;
       const orbX = groupRef.current.userData.uniforms.uOrbX.value;
+      const orbY = groupRef.current.userData.uniforms.uOrbY ? groupRef.current.userData.uniforms.uOrbY.value : 0;
       
       // Scale amplitude by intensity (very chill at 0.2, violent closer to 1.0)
       const shakeHz = 25.0; // high frequency
       const shakeAmp = Math.max(0, (intensity - 0.2)) * 0.15; 
       
       groupRef.current.position.x = orbX + (Math.sin(state.clock.elapsedTime * shakeHz) * shakeAmp);
-      groupRef.current.position.y = Math.cos(state.clock.elapsedTime * shakeHz * 1.1) * shakeAmp;
+      groupRef.current.position.y = orbY + (Math.cos(state.clock.elapsedTime * shakeHz * 1.1) * shakeAmp);
       groupRef.current.position.z = Math.sin(state.clock.elapsedTime * shakeHz * 0.9) * shakeAmp;
 
       // Idle float rotation

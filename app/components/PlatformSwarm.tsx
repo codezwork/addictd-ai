@@ -149,7 +149,9 @@ export const PlatformSwarm = forwardRef<THREE.Points, any>((props, ref) => {
           const cy = (minY + maxY) / 2;
           const w = maxX - minX;
           const h = maxY - minY;
-          const scale = 5.0 / Math.max(w, h, 0.01);
+          const isMobile = window.innerWidth < 768;
+          const baseScale = isMobile ? 2.5 : 5.0; // Shrink significantly for mobile
+          const scale = baseScale / Math.max(w, h, 0.01);
 
           for (let i = 0; i < count; i++) {
             const i3 = i * 3;

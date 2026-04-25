@@ -21,7 +21,6 @@ export function ScrollOrchestrator() {
   const feat1Ref = useRef<THREE.Group>(null);
   const feat2Ref = useRef<THREE.Group>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
-  const pricingRef = useRef<HTMLDivElement>(null);
   const swarmTextRef = useRef<HTMLDivElement>(null);
   const ytRef = useRef<HTMLDivElement>(null);
   const dcRef = useRef<HTMLDivElement>(null);
@@ -99,7 +98,7 @@ export function ScrollOrchestrator() {
     // --- PHASE 2: SCROLL TRIGGERS ---
     const mm = gsap.matchMedia();
     
-    mm.add('(min-width: 320px)', () => {
+        mm.add('(min-width: 768px)', () => {
       // Create the main timeline tied to the scroll depth
       // We will map duration strictly across 100 to easily use % semantics
       const scrollTL = gsap.timeline({
@@ -117,7 +116,7 @@ export function ScrollOrchestrator() {
         feat1X: 15, feat1Opacity: 0, 
         feat2X: -15, feat2Opacity: 0,
         orbScaleX: 1.0, orbScaleY: 1.0, orbScaleZ: 1.0, morphProgress: 0.0,
-        orbX: 0.0,
+        orbX: 0.0, orbY: 0.0,
         swarmTextOpacity: 0.0, ytOp: 0.0, dcOp: 0.0, xOp: 0.0
       };
 
@@ -128,6 +127,9 @@ export function ScrollOrchestrator() {
           orbRef.current.userData.uniforms.uCrackProgress.value = scrollProxy.crackProgress;
           if (orbRef.current.userData.uniforms.uOrbX) {
             orbRef.current.userData.uniforms.uOrbX.value = scrollProxy.orbX;
+          }
+          if (orbRef.current.userData.uniforms.uOrbY) {
+            orbRef.current.userData.uniforms.uOrbY.value = scrollProxy.orbY;
           }
         }
         if (swarmRef.current?.userData?.uniforms) {
@@ -260,16 +262,175 @@ export function ScrollOrchestrator() {
         onUpdate: update3D
       }, 130);
       
-      // 140% - 150%: The Pricing UI Final Reveal
-      if (pricingRef.current) {
-        scrollTL.to(pricingRef.current, {
-          opacity: 1,
-          pointerEvents: 'auto',
+    });
+
+    mm.add('(max-width: 767px)', () => {
+      // Create the main timeline tied to the scroll depth
+      // We will map duration strictly across 100 to easily use % semantics
+      const scrollTL = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1, // Smooth scrubbing
+        }
+      });
+      
+      const scrollProxy = { 
+        intensity: 0.2, crackProgress: 0, 
+        orbRotationY: 0, 
+        feat1X: 15, feat1Opacity: 0, 
+        feat2X: -15, feat2Opacity: 0,
+        orbScaleX: 1.0, orbScaleY: 1.0, orbScaleZ: 1.0, morphProgress: 0.0,
+        orbX: 0.0, orbY: 0.0,
+        swarmTextOpacity: 0.0, ytOp: 0.0, dcOp: 0.0, xOp: 0.0
+      };
+
+      const update3D = () => {
+        // 1. Uniforms
+        if (orbRef.current?.userData?.uniforms) {
+          orbRef.current.userData.uniforms.uIntensity.value = scrollProxy.intensity;
+          orbRef.current.userData.uniforms.uCrackProgress.value = scrollProxy.crackProgress;
+          if (orbRef.current.userData.uniforms.uOrbX) {
+            orbRef.current.userData.uniforms.uOrbX.value = scrollProxy.orbX;
+          }
+          if (orbRef.current.userData.uniforms.uOrbY) {
+            orbRef.current.userData.uniforms.uOrbY.value = scrollProxy.orbY;
+          }
+        }
+        if (swarmRef.current?.userData?.uniforms) {
+          swarmRef.current.userData.uniforms.uMorphProgress.value = scrollProxy.morphProgress;
+        }
+        // 2. Orb Rotation & Scale
+        if (orbRef.current) {
+          orbRef.current.rotation.y = scrollProxy.orbRotationY;
+          orbRef.current.scale.set(scrollProxy.orbScaleX, scrollProxy.orbScaleY, scrollProxy.orbScaleZ);
+        }
+        // 3. 3D Card Positions
+        if (feat1Ref.current) feat1Ref.current.position.x = scrollProxy.feat1X;
+        if (feat2Ref.current) feat2Ref.current.position.x = scrollProxy.feat2X;
+        
+        // 4. HTML Opacities
+        const f1 = document.querySelector('.feature-1') as HTMLElement;
+        if (f1) f1.style.opacity = scrollProxy.feat1Opacity.toString();
+        
+        const f2 = document.querySelector('.feature-2') as HTMLElement;
+        if (f2) f2.style.opacity = scrollProxy.feat2Opacity.toString();
+        
+        // Phase 4 Typography Update
+        if (swarmTextRef.current) swarmTextRef.current.style.opacity = scrollProxy.swarmTextOpacity.toString();
+        if (ytRef.current) ytRef.current.style.opacity = scrollProxy.ytOp.toString();
+        if (dcRef.current) dcRef.current.style.opacity = scrollProxy.dcOp.toString();
+        if (xRef.current) xRef.current.style.opacity = scrollProxy.xOp.toString();
+      };
+
+      // 0% - 15%: Fade out the heroTextRef
+      if (heroTextRef.current) {
+        scrollTL.to(heroTextRef.current, {
+          opacity: 0,
           y: -50,
-          ease: 'power2.out',
-          duration: 10
-        }, 140);
+          ease: 'power1.inOut',
+          duration: 15
+        }, 0);
       }
+
+      // 15% - 40% Scroll (First Stop)
+      scrollTL.to(scrollProxy, {
+        orbRotationY: Math.PI * 2,
+        intensity: 0.5,
+        crackProgress: 0.5,
+        feat1X: 0,
+        feat1Opacity: 1,
+        orbY: 1.5,
+        orbX: 0,
+        ease: 'power2.inOut',
+        duration: 25,
+        onUpdate: update3D
+      }, 15);
+
+      // 40% - 70% Scroll (Second Stop)
+      scrollTL.to(scrollProxy, {
+        feat1X: 15,
+        feat1Opacity: 0,
+        orbRotationY: Math.PI * 4,
+        intensity: 0.8,
+        crackProgress: 0.8,
+        feat2X: 0,
+        feat2Opacity: 1,
+        orbY: 1.5,
+        orbX: 0,
+        ease: 'power2.inOut',
+        duration: 30,
+        onUpdate: update3D
+      }, 40);
+
+      // 70% - 75% Scroll (Card Exit, Reach Max Volatility before Shatter)
+      scrollTL.to(scrollProxy, {
+        feat2X: -15,
+        feat2Opacity: 0,
+        intensity: 1.0,
+        crackProgress: 1.0,
+        orbY: 0,
+        orbX: 0,
+        ease: 'power2.inOut',
+        duration: 5,
+        onUpdate: update3D
+      }, 70);
+
+      // 75% - 90%: The Containment Breach (Orb Shatters smoothly to void)
+      scrollTL.to(scrollProxy, {
+        orbScaleX: 0,
+        orbScaleY: 0,
+        orbScaleZ: 0,
+        intensity: 0,
+        ease: 'power2.inOut',
+        duration: 15,
+        onUpdate: update3D
+      }, 75);
+
+      // 85% - 95%: Swarm YouTube Logo
+      scrollTL.to(scrollProxy, {
+        morphProgress: 1.0,
+        swarmTextOpacity: 1.0,
+        ytOp: 1.0,
+        ease: 'power2.inOut',
+        duration: 10,
+        onUpdate: update3D
+      }, 85);
+      
+      scrollTL.to(scrollProxy, { ytOp: 0, duration: 2, ease: 'power2.inOut', onUpdate: update3D }, 95);
+
+      // 100% - 110%: Swarm Discord Logo
+      scrollTL.to(scrollProxy, {
+        morphProgress: 2.0,
+        dcOp: 1.0,
+        ease: 'power2.inOut',
+        duration: 10,
+        onUpdate: update3D
+      }, 100);
+      
+      scrollTL.to(scrollProxy, { dcOp: 0, duration: 2, ease: 'power2.inOut', onUpdate: update3D }, 110);
+
+      // 115% - 125%: Swarm X Logo
+      scrollTL.to(scrollProxy, {
+        morphProgress: 3.0,
+        xOp: 1.0,
+        ease: 'power2.inOut',
+        duration: 10,
+        onUpdate: update3D
+      }, 115);
+      
+      // Before sand falls, fade entire overlay out
+      scrollTL.to(scrollProxy, { xOp: 0, swarmTextOpacity: 0, duration: 4, ease: 'power2.inOut', onUpdate: update3D }, 125);
+
+      // 130% - 140%: Swarm drops to Sand Floor
+      scrollTL.to(scrollProxy, {
+        morphProgress: 4.0,
+        ease: 'power2.inOut',
+        duration: 10,
+        onUpdate: update3D
+      }, 130);
+      
     });
 
     return () => mm.revert();
@@ -331,7 +492,10 @@ export function ScrollOrchestrator() {
           </div>
         </div>
 
-        <div ref={pricingRef} className="absolute bottom-10 w-full flex flex-col items-center justify-center p-8 pb-32 z-10 opacity-0 pointer-events-none translate-y-24">
+      </div>
+
+      {/* NEW NATIVE PRICING BLOCK HERE */}
+        <div className="relative w-full min-h-screen flex flex-col items-center justify-start md:justify-center p-4 pt-32 pb-0 z-10 bg-gradient-to-b from-transparent via-[#06040F]/90 to-[#06040F]">
           <div className="text-[0.72rem] tracking-[0.2em] uppercase text-purple-400 mb-3">Pricing</div>
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4 font-[family-name:var(--font-syne)]" style={{ textShadow: "0 0 30px rgba(167,139,250,0.6)" }}>
@@ -339,7 +503,7 @@ export function ScrollOrchestrator() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 scale-[0.9] sm:scale-100 max-w-6xl w-full justify-center mb-24 md:mb-32">
             
             {/* Trial Tier */}
             <div className="rounded-[22px] bg-[#0D0A1F] border border-purple-500/25 p-8 relative flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-purple-400/50 hover:shadow-[0_25px_55px_rgba(139,92,246,0.3)]">
@@ -399,8 +563,18 @@ export function ScrollOrchestrator() {
             </div>
 
           </div>
+
+          <div className="absolute bottom-0 w-full border-t border-purple-500/15 py-6 px-8 flex flex-col md:flex-row justify-between items-center bg-[#06040F]/80 backdrop-blur-md">
+            <div className="text-zinc-500 text-xs mb-4 md:mb-0">
+              addictd.ai © 2026. All rights reserved.
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="text-zinc-500 hover:text-purple-400 text-xs transition-colors">Terms</a>
+              <a href="#" className="text-zinc-500 hover:text-purple-400 text-xs transition-colors">Privacy</a>
+              <a href="#" className="text-zinc-500 hover:text-purple-400 text-xs transition-colors">Contact</a>
+            </div>
+          </div>
         </div>
-      </div>
     </div>
   );
 }
